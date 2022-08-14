@@ -1,33 +1,41 @@
-class Solution {
+ class Solution {
 public:
-    vector<int>vis,col;
-    bool dfs(int v, int c, vector<vector<int>>& graph){
-        vis[v]=1;
-        col[v]=c;
-        for(int child:graph[v]){
-            if(vis[child]==0){
-                if(dfs(child,c^1,graph)==false) 
-                    return false;
+    bool isBipartiteDFS(int src,vector<vector<int>>& graph,vector<int>& color)
+    {
+        if(color[src]==-1)
+        {
+            color[src]=1;   
+        }
+        for(auto it:graph[src])
+        {
+          if(color[it]==-1)
+           {
+                color[it]=1-color[src];
+             if(!isBipartiteDFS(it,graph,color))
+              {
+                return false;
+               }
             }
-            else{
-                if(col[v]==col[child])
-                    return false;
+            else if(color[it]==color[src])
+            {
+                return false;
             }
         }
         return true;
     }
-    
     bool isBipartite(vector<vector<int>>& graph) {
         int n=graph.size();
-        vis.resize(n);
-        col.resize(n);
-
-        for(int i=0;i<n;++i){
-            if(vis[i]==0 && dfs(i,0,graph)==false){ 
-                return false;
+        vector<int> color(n,-1);
+        for(int i=0;i<n;i++)
+        {
+            if(color[i]==-1)
+            {
+                if(!isBipartiteDFS(i,graph,color))
+                {
+                    return false;
+                }
             }
         }
-        
         return true;
     }
 };
